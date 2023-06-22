@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Git Clone') {
             steps {
+                cleanWs()
                 sh """
                 git clone https://github.com/RixCypz/basicjenkins.git
                 """
