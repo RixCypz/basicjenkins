@@ -10,6 +10,12 @@ pipeline {
             }
         }
 
+        stage('Build .jar') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
         stage('Docker Build') {
             steps {
                 sh """
