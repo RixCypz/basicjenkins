@@ -17,36 +17,57 @@ pipeline {
 
         stage('Build .jar') {
             steps {
-                sh 'mvn clean install'
+                sh """
+                    mvn --version
+                    cd basicjenkins
+                    ls
+                    mvn clean install
+                """
             }
         }
-
+        
         stage('Docker Build') {
             steps {
-                sh """
-                docker build -t mytestapp .
-                """
+                script {
+                    withEnv(["PATH+DOCKER=/usr/local/bin"]) {
+                        sh """
+                            docker --version
+                            docker pull openjdk:17-jdk-slim-buster
+                            cd basicjenkins
+                            ls
+                            docker build -t mytestapp .
+                        """
+                    }
+                }
             }
         }
-
-        stage('Docker Run') {
+        
+        stage('Deploy K8s'){
             steps {
-                sh """
-                docker run -p 8081:8081 mytestapp
-                """
-            }
+                script {
+                    withEnv(["PATH+DOCKER=/usr/local/bin"]){
+                        sh """
+                            kubectl create deployment mytestapp --image=mytestapp:latest
+                        """
+                    }
+                }
+            }            
         }
-
-        // stage('Clean up') {
+        // stage('Docker Run') {
         //     steps {
-        //         cleanWs()
+        //         script {
+        //             withEnv(["PATH+DOCKER=/usr/local/bin"]) {
+        //                 sh """
+        //                     docker run -p 8081:8081 mytestapp
+        //                 """
+        //             }
+        //         }
         //     }
         // }
-
     }
-    post {
-        always{
-            cleanWs()
-        }
-    }
+    // post {
+    //     always{
+    //         cleanWs()
+    //     }
+    // }
 }

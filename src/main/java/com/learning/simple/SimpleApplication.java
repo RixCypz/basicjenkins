@@ -14,7 +14,7 @@ public class SimpleApplication {
 
 	@GetMapping("/hello")
     public String sayHello() {
-        return "Sawasdee Bakhumnoi";
+        return "Sawasdee Loke";
     }
 
 }
