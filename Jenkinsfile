@@ -43,7 +43,8 @@ pipeline {
         }
         
         stage('Deploy K8s'){
-            steps {
+            steps {ls ~/.kube/config
+
                 script {
                     withEnv(["PATH+DOCKER=/usr/local/bin"]){
                         sh """
