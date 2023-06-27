@@ -31,10 +31,10 @@ pipeline {
                 script {
                     withEnv(["PATH+DOCKER=/usr/local/bin"]) {
                         sh """
-                            docker --version
                             docker pull openjdk:17-jdk-slim-buster
                             cd basicjenkins
-                            ls
+                            minikube start
+                            eval $(minikube docker-env)   
                             docker build -t mytestapp .
                         """
                     }
@@ -47,7 +47,10 @@ pipeline {
                 script {
                     withEnv(["PATH+DOCKER=/usr/local/bin"]){
                         sh """
-                            kubectl create deployment mytestapp --image=mytestapp:latest
+                            kubectl apply -f deployment.yaml
+                            kubectl get all
+                            POD_NAME=$(kubectl get pods -l app=server -o jsonpath='{.items[0].metadata.name}')
+                            kubectl logs $POD_NAME
                         """
                     }
                 }
