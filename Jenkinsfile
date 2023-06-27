@@ -12,7 +12,7 @@ pipeline {
     
     parameters {
         choice(
-            choices: ['main', 'DEV', 'SIT',, 'UAT'],
+            choices: ['main', 'DEV', 'SIT', 'UAT'],
             description: 'Select the branch to clone',
             name: 'BRANCH'
         )
