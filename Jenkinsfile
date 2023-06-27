@@ -43,11 +43,11 @@ pipeline {
         }
         
         stage('Deploy K8s'){
-            steps {ls ~/.kube/config
-
+            steps {
                 script {
                     withEnv(["PATH+DOCKER=/usr/local/bin"]){
                         sh """
+                        rm ~/.docker/config.json
                             kubectl apply -f deployment.yaml
                             kubectl get all
                             POD_NAME=$(kubectl get pods -l app=server -o jsonpath='{.items[0].metadata.name}')
