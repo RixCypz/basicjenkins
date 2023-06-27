@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+    
     tools {
         maven 'maven'
     }
@@ -10,17 +10,28 @@ pipeline {
         DOCKER_REGISTRY = "rixcypz/jenkinstest"
     } 
     
+    parameters {
+        choice(
+            choices: ['main', 'DEV', 'SIT', 'UAT'],
+            description: 'Select the branch to clone',
+            name: 'BRANCH'
+        )
+    }
+    
     stages {
 
         stage('Git Clone') {
             steps {
                 cleanWs()
-                dir('sourcecode'){
-                    sh """
-                    git clone https://github.com/RixCypz/basicjenkins.git
-                    """    
+                script {
+                    def branch = params.BRANCH ?: 'main'
+                    echo "Selected branch: ${branch}"
+                    dir('sourcecode'){
+                        sh """
+                        git clone -b ${branch} https://github.com/RixCypz/basicjenkins.git
+                        """    
+                    }
                 }
-                
             }
         }
 
